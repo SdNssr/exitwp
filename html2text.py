@@ -121,6 +121,15 @@ def unescape(s):
 
 ### End Entity Nonsense ###
 
+
+def cleanUrl(url):
+    """Remove scheme and hostname from url."""
+    splitUrl = urlparse.urlsplit(url)
+    if splitUrl[1] == internal_domain:
+        return urlparse.urlunsplit(("", "", splitUrl[2], splitUrl[3], splitUrl[4]))
+    else:
+        return url
+
 def onlywhite(line):
     """Return true if the line does only consist of whitespace characters."""
     for c in line:
@@ -512,6 +521,8 @@ class _html2text(HTMLParser.HTMLParser):
                 self.abbr_data = ''
 
         if tag == "a" and not IGNORE_ANCHORS:
+            if has_key(attrs, 'href'):
+                attrs['href'] = cleanUrl(attrs['href'])
             if start:
                 if has_key(attrs, 'href') and not (SKIP_INTERNAL_LINKS and attrs['href'].startswith('#')):
                     self.astack.append(attrs)
@@ -537,6 +548,7 @@ class _html2text(HTMLParser.HTMLParser):
 
         if tag == "img" and start and not IGNORE_IMAGES:
             if has_key(attrs, 'src'):
+                attrs['src'] = cleanUrl(attrs['src'])
                 attrs['href'] = attrs['src']
                 alt = attrs.get('alt', '')
                 if INLINE_LINKS:

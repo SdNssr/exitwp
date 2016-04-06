@@ -14,6 +14,7 @@ import yaml
 from bs4 import BeautifulSoup
 
 from html2text import html2text_file
+import html2text
 
 '''
 exitwp - Wordpress xml exports to Jekykll blog format conversion
@@ -36,6 +37,7 @@ item_type_filter = set(config['item_type_filter'])
 item_field_filter = config['item_field_filter']
 date_fmt = config['date_format']
 body_replace = config['body_replace']
+html2text.internal_domain = config['internal_domain']
 
 
 # Time definitions
